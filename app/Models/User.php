@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Collections\UserCollection;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -20,6 +23,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'birthday',
         'password',
     ];
 
@@ -40,5 +44,29 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'birthday' => 'date',
     ];
+
+    public function newCollection(array $models = []): Collection
+    {
+        return new UserCollection($models);
+    }
+
+    //Relations
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+
+    //Methods
+    public function isAdmin(): bool
+    {
+        if ($this->id % 2) {
+            return false;
+        }
+
+        return true;
+    }
+
 }
