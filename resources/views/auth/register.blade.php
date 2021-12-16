@@ -26,6 +26,12 @@
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
             </div>
 
+            <!-- Email Address -->
+            <div class="mt-4">
+                <x-label for="birthday" :value="__('Birthday')" />
+                <x-input id="birthday" class="block mt-1 w-full" type="date" name="birthday" :value="old('birthday')" required />
+            </div>
+
             <!-- Password -->
             <div class="mt-4">
                 <x-label for="password" :value="__('Password')" />
@@ -56,4 +62,7 @@
             </div>
         </form>
     </x-auth-card>
+    @push('scripts')
+        var picker = new Pikaday({ field: document.getElementById('datepicker') });
+    @endpush
 </x-guest-layout>
