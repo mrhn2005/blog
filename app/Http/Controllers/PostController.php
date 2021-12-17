@@ -22,7 +22,7 @@ class PostController extends Controller
             ->search($request->input(SearchEnum::SEARCH_TERM))
             ->sort($request->input(SearchEnum::SORT))
             ->filter($request->query())
-            ->with(['user' => fn ($q) => $q->withCountPostsMultiplyAge()])
+            // ->with(['user' => fn ($q) => $q->withCountPostsMultiplyAge()])
             ->paginate($request->input(SearchEnum::PER_PAGE) ?: 15)
             ->appends(request()->query());
 

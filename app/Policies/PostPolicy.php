@@ -30,7 +30,7 @@ class PostPolicy
      */
     public function update(User $user, Post $post)
     {
-        return $user->isAdmin() && $user->id === $post->user_id;
+        return $user->isAdmin() && $user->id === (int) $post->user_id;
     }
 
     /**
@@ -42,7 +42,7 @@ class PostPolicy
      */
     public function delete(User $user, Post $post)
     {
-        return $user->isAdmin() && $user->id === $post->user_id;
+        return $user->isAdmin() && $user->id === (int) $post->user_id;
     }
 
     public function before(User $user, $ability)
