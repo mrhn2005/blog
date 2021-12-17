@@ -6,7 +6,7 @@ use App\Models\Post;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class PostCreateRequest extends FormRequest
+class PostUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,7 +29,7 @@ class PostCreateRequest extends FormRequest
             'title' => ['required', 'string', 'max:200'],
             'content' => ['required', 'string', 'max:20000'],
             'image' => [
-                'required',
+                'nullable',
                 'max:500',
                 // Rule::dimensions()
                 //     ->minHeight(400)

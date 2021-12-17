@@ -17,7 +17,9 @@ class PostObserver
 
     public function updated(Post $post): void
     {
-        //
+        if ($post->isDirty('image') && $post->image) {
+            makeThumbnail(Storage::path($post->image), 100, 100);
+        }
     }
 
     public function deleted(Post $post): void

@@ -25,7 +25,7 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
-    //Attributes
+    //Accessors
     public function getExcerptAttribute()
     {
         return Str::limit(strip_tags($this->content), 100, '...');
@@ -33,7 +33,7 @@ class Post extends Model
 
     public function getImageUrlAttribute()
     {
-        if (!$this->image) {
+        if (! $this->image) {
             return null;
         }
 
@@ -42,7 +42,7 @@ class Post extends Model
 
     public function getThumbnailImageAttribute()
     {
-        if (!$this->image) {
+        if (! $this->image) {
             return null;
         }
 
@@ -55,7 +55,7 @@ class Post extends Model
 
     public function getThumbnailImageUrlAttribute()
     {
-        if (!$this->image) {
+        if (! $this->image) {
             return null;
         }
 

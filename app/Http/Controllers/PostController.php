@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\PostAction;
 use App\Enums\SearchEnum;
 use App\Http\Requests\PostCreateRequest;
+use App\Http\Requests\PostUpdateRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -19,8 +21,8 @@ class PostController extends Controller
         $posts = Post::query()
             ->search($request->input(SearchEnum::SEARCH_TERM))
             ->sort($request->input(SearchEnum::SORT))
-            ->latest('id')
-            ->paginate()
+            ->filter($request->query())
+            ->paginate($request->input(SearchEnum::PER_PAGE) ?: 15)
             ->appends(request()->query());
 
         return view('posts.index', compact('posts'));
@@ -44,9 +46,9 @@ class PostController extends Controller
      * @param  \App\Http\Requests\PostCreateRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PostCreateRequest $request)
+    public function store(PostCreateRequest $request, PostAction $postAction)
     {
-        $imagePath = $request->file('image')->store('posts/' . now()->format('Y-m-d'));
+        $imagePath = $postAction->uploadPhoto($request->file('image'));
 
         auth()->user()->posts()->create(
             array_merge($request->validated(), ['image' => $imagePath])
@@ -74,7 +76,9 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        return view('posts.edit', compact('posts'));
+        $this->authorize('update', $post);
+
+        return view('posts.edit', compact('post'));
     }
 
     /**
@@ -84,9 +88,17 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostUpdateRequest $request, Post $post, PostAction $postAction)
     {
-        //
+        $imageArray = [];
+        if ($request->has('image')) {
+            $postAction->deletePhotos($post);
+            $imageArray['image'] = $postAction->uploadPhoto($request->file('image'));
+        }
+
+        $post->update(array_merge($request->validated(), $imageArray));
+
+        return back()->with(['messages' => ['Post updated successfully']]);
     }
 
     /**
@@ -97,6 +109,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        $this->authorize('delete', $post);
+
         $post->delete();
 
         return back()->with(['messages' => ['Post deleted successfully']]);

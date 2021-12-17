@@ -2,6 +2,7 @@
 
 namespace App\Models\QueryBuilders;
 
+use App\Enums\SearchEnum;
 use Illuminate\Database\Eloquent\Builder;
 
 class PostQueryBuilder extends Builder
@@ -13,6 +14,14 @@ class PostQueryBuilder extends Builder
             fn ($q, $term) => $q->where(
                 fn ($q) => $q->where('title', 'like', "%{$term}%")
             )
+        );
+    }
+
+    public function filter(array $filters): self
+    {
+        return $this->when(
+            @$filters[SearchEnum::USER_ID],
+            fn ($q, $userId) => $q->where('user_id', $userId)
         );
     }
 

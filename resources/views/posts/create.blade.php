@@ -21,7 +21,7 @@
             <div class="mt-4">
                 <x-label for="editor" :value="__('Content')" />
                 <textarea name="content" name="content" style="display:none" id="hiddenArea"></textarea>
-                <div id="editor" style="height:500px;" > {{old('content')}} </div>
+                <div id="editor" style="height:500px;" > {!! old('content') !!} </div>
             </div>
 
             <div class="mt-4">
@@ -37,16 +37,5 @@
             </div>
         </form>
     </x-auth-card>
-    @push('scripts')
-        <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-        <script>
-            var quill = new Quill('#editor', {
-                theme: 'snow'
-            });
-
-            function setEditorText() {
-                document.getElementById("hiddenArea").value = quill.root.innerHTML;
-            }
-        </script>
-    @endpush
+    @include('packages.quill')
 </x-app-layout>

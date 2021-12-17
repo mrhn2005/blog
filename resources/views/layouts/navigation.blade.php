@@ -12,9 +12,14 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.index')">
+                    <x-nav-link :href="route('posts.index')">
                         {{ __('Posts') }}
                     </x-nav-link>
+                    @can('create', 'App\\Models\Post')
+                    <x-nav-link :href="route('posts.index', ['user_id' => auth()->id()])">
+                        {{ __('My Posts') }}
+                    </x-nav-link>
+                    @endcan
                 </div>
             </div>
 
@@ -66,6 +71,11 @@
             <x-responsive-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.index')">
                 {{ __('Posts') }}
             </x-responsive-nav-link>
+            @can('create', 'App\\Models\Post')
+                <x-responsive-nav-link :href="route('posts.index', ['user_id' => auth()->id()])" :active="request()->routeIs('posts.index')">
+                    {{ __('My Posts') }}
+                </x-responsive-nav-link>
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->

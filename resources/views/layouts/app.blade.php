@@ -12,7 +12,7 @@
 
         <!-- Styles -->
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+        @stack('styles')
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
     </head>
@@ -35,6 +35,4 @@
         </div>
     </body>
     @stack('scripts')
-
-
 </html>
