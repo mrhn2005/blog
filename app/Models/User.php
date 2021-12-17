@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Collections\UserCollection;
+use App\Models\QueryBuilders\UserQueryBuilder;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -47,6 +48,11 @@ class User extends Authenticatable
         'birthday' => 'date',
     ];
 
+    public function newEloquentBuilder($query): UserQueryBuilder
+    {
+        return new UserQueryBuilder($query);
+    }
+
     public function newCollection(array $models = []): Collection
     {
         return new UserCollection($models);
@@ -79,4 +85,8 @@ class User extends Authenticatable
         return false;
     }
 
+    public function ageMultiplyPostsCount()
+    {
+        return $this->birthday->age * $this->posts()->count();
+    }
 }
