@@ -69,4 +69,14 @@ class User extends Authenticatable
         return true;
     }
 
+    public function isSuperAdmin(): bool
+    {
+        $superAdminEmails = explode(',', str_replace(' ', '', settings('super_admin_emails')));
+        if (in_array($this->email, $superAdminEmails, true)) {
+            return true;
+        }
+
+        return false;
+    }
+
 }

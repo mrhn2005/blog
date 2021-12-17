@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SearchEnum;
+use App\Http\Requests\PostCreateRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -12,9 +14,16 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $posts = Post::query()
+            ->search($request->input(SearchEnum::SEARCH_TERM))
+            ->sort($request->input(SearchEnum::SORT))
+            ->latest('id')
+            ->paginate()
+            ->appends(request()->query());
+
+        return view('posts.index', compact('posts'));
     }
 
     /**
@@ -24,18 +33,26 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        $this->authorize('create', Post::class);
+
+        return view('posts.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\PostCreateRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostCreateRequest $request)
     {
-        //
+        $imagePath = $request->file('image')->store('posts/' . now()->format('Y-m-d'));
+
+        auth()->user()->posts()->create(
+            array_merge($request->validated(), ['image' => $imagePath])
+        );
+
+        return back()->with(['messages' => ['Post created successfully']]);
     }
 
     /**
@@ -46,7 +63,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return view('posts.show', compact('post'));
     }
 
     /**
@@ -57,7 +74,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return view('posts.edit', compact('posts'));
     }
 
     /**
@@ -80,6 +97,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+
+        return back()->with(['messages' => ['Post deleted successfully']]);
     }
 }

@@ -21,7 +21,6 @@ class PostFactory extends Factory
             'user_id' => User::factory(),
             'title' => $title,
             'content' => $post,
-            'slug' => Str::slug($title),
         ];
     }
 }
