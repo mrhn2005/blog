@@ -22,6 +22,7 @@ class PostController extends Controller
             ->search($request->input(SearchEnum::SEARCH_TERM))
             ->sort($request->input(SearchEnum::SORT))
             ->filter($request->query())
+            ->with(['user' => fn ($q) => $q->withCountPostsMultiplyAge()])
             ->paginate($request->input(SearchEnum::PER_PAGE) ?: 15)
             ->appends(request()->query());
 
@@ -48,6 +49,8 @@ class PostController extends Controller
      */
     public function store(PostCreateRequest $request, PostAction $postAction)
     {
+        $this->authorize('create', Post::class);
+
         $imagePath = $postAction->uploadPhoto($request->file('image'));
 
         auth()->user()->posts()->create(
@@ -90,6 +93,8 @@ class PostController extends Controller
      */
     public function update(PostUpdateRequest $request, Post $post, PostAction $postAction)
     {
+        $this->authorize('update', $post);
+
         $imageArray = [];
         if ($request->has('image')) {
             $postAction->deletePhotos($post);

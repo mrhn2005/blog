@@ -15,7 +15,7 @@ class PostUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return optional(auth()->user())->can('create', Post::class);
+        return true;
     }
 
     /**
