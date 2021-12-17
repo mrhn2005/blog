@@ -1,6 +1,6 @@
 <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
     <a href="{{ route('posts.show', [ 'post'=> $post->id ]) }}">
-        <img class="rounded-t-lg" src="https://picsum.photos/400/400" alt="" />
+        <img class="rounded-t-lg" src="{{asset($post->image_full_url)}}" alt="{{$post->title}}" />
     </a>
     <div class="p-5">
         <a href="{{ route('posts.show', [ 'post'=> $post->id ]) }}">
